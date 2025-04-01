@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = g++
-CFLAGS_BASE = -g -Werror -Wall -std=c++17 -I include
+CFLAGS_BASE = -g -Werror -Wall -std=c++17 -I ./include
 LDFLAGS = -pthread
 
 # If DEBUGGER is set, don't use ASAN
