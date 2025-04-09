@@ -72,11 +72,7 @@ int main(int argc, char *argv[]) {
         response->setContentType("text/plain");
         response->setBody("After fixing up the classes!");
 
-        // Echo the message back to the client
-        std::string responseBody = response->getResponse();
-        std::cout << "Response: " << responseBody << std::endl;
-        ssize_t bytes_sent = write(client_fd, responseBody.c_str(), responseBody.size());
-        if (bytes_sent == -1) {
+        if (!response->sendResponse()) {
             std::cerr << "Error sending response\n";
         }
 

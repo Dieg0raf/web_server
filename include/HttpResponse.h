@@ -9,16 +9,17 @@
 
 class HttpResponse {
    public:
-    explicit HttpResponse(const int client_fd) : httpHandler(new HttpHandler(client_fd)) {};
+    explicit HttpResponse(const int client_fd);
     void setHeader(const std::string &key, const std::string &value);
     void setContentType(const std::string &type);
     void setStatus(int newStatus);
     void setBody(const std::string &data);
-    std::string getResponse();
+    bool sendResponse();
 
    private:
     std::unique_ptr<HttpHandler> httpHandler;
-    std::string statusToString();
+    std::string statusToStr();
+    std::string getResponseStr();
     std::unordered_map<std::string, std::string> headers;
     std::string body;
     std::string contentType;

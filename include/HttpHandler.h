@@ -14,7 +14,7 @@ class HttpHandler {
     const std::string& getRequestData();
 
     // Used for Response
-    int sendData(const std::string& response);
+    bool sendData(const std::string& response);
 
    private:
     int client_fd;

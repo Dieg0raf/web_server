@@ -20,6 +20,7 @@ HttpHandler::~HttpHandler() {
         if (close(client_fd) < 0) {
             std::runtime_error("Error closing socket");
         }
+        std::cout << "Client " << client_fd << " socket closed gracefully.\n";
     }
 }
 
@@ -72,6 +73,10 @@ std::string HttpHandler::receiveData() {
 }
 
 // used to send the response
-int HttpHandler::sendData(const std::string& response) {
-    return 0;
+bool HttpHandler::sendData(const std::string& response) {
+    ssize_t bytes_sent = write(client_fd, response.c_str(), response.size());
+    if (bytes_sent < 0) {
+        return false;
+    }
+    return true;
 }
