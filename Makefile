@@ -13,10 +13,12 @@ endif
 # Directories
 SRC_DIR = src
 HTTP_DIR = src/http
+SOCKET_DIR = src/socket
+CON_DIR = src/connection
 INCLUDE_DIR = include
 
 # Source and object files
-SRC = $(wildcard $(HTTP_DIR)/*.cpp) $(SRC_DIR)/server.cpp
+SRC = $(wildcard $(HTTP_DIR)/*.cpp) $(wildcard $(SOCKET_DIR)/*cpp) $(wildcard $(CON_DIR)/*cpp) $(SRC_DIR)/server.cpp
 OBJ = $(SRC:.cpp=.o)
 
 # Target executable
@@ -31,6 +33,9 @@ $(EXE): $(OBJ)
 
 # Rule to create object files from .cpp files
 src/http/%.o: src/http/%.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+src/socket/%.o: src/socket/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
 src/%.o: src/%.cpp

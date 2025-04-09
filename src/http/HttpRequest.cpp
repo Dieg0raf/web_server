@@ -1,9 +1,10 @@
 #include "HttpRequest.h"
 
+#include <iostream>
+#include <sstream>
 #include <string>
 
-HttpRequest::HttpRequest(const std::string &raw_request) {
-    parse(raw_request);
+HttpRequest::HttpRequest(const int client_fd) : httpHandler(new HttpHandler(client_fd)) {
 }
 
 std::string HttpRequest::getMethod() {
@@ -32,8 +33,19 @@ std::string HttpRequest::getHeaders() {
     return headers_str.str();
 }
 
-void HttpRequest::parse(const std::string &raw_request) {
-    std::istringstream stream(raw_request);
+bool HttpRequest::parseRequest() {
+    return parse();
+}
+
+bool HttpRequest::parse() {
+    // Accept request (request data from httpHandler)
+    if (!httpHandler->receiveRequest()) {
+        return false;
+    }
+
+    // Get request data as string
+    std::string requestDataStr = httpHandler->getRequestData();
+    std::istringstream stream(requestDataStr);
     std::string line;
 
     // Check if invalid request
@@ -45,6 +57,7 @@ void HttpRequest::parse(const std::string &raw_request) {
     std::istringstream request_line(line);
     if (!(request_line >> method >> uri >> version)) {
         throw std::runtime_error("Invalid request line");
+        return false;
     }
 
     // Parse headers
@@ -70,4 +83,6 @@ void HttpRequest::parse(const std::string &raw_request) {
     if (!body.empty() && body.back() == '\n') {
         body.pop_back();
     }
+
+    return true;
 }
