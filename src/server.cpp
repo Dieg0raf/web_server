@@ -3,12 +3,12 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-// TODO: include <filesystem>
-
 #include <cstring>
 #include <exception>
+#include <filesystem>
+#include <fstream>
 #include <iostream>
-#include <memory>
+/*#include <memory>*/
 #include <string>
 
 #include "HttpRequest.h"
@@ -22,6 +22,7 @@
 int server_fd = -1;
 int client_fd = -1;
 ServerSocket *serverSocket = nullptr;
+namespace fs = std::filesystem;
 
 void cleanup(int signum) {
     if (serverSocket != nullptr) {
@@ -61,6 +62,7 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
+        std::string uri = "/Users/diegoo/Desktop/Programming/portfolio_projects/web_server" + client->getUri();
         std::cout << "Client method: " << client->getMethod() << std::endl;
         std::cout << "Client uri: " << client->getUri() << std::endl;
         std::cout << "Client version: " << client->getVersion() << std::endl;
@@ -68,14 +70,40 @@ int main(int argc, char *argv[]) {
 
         // creates HttpResponse object
         HttpResponse *response = new HttpResponse(client_fd);
-        response->setStatus(200);
-        response->setContentType("text/plain");
-        response->setBody("After fixing up the classes!");
+        if (uri.find("../") != std::string::npos || uri.find("..\\") != std::string::npos) {
+            // Path traversal attempt detected
+            response->setStatus(404);  // or 403 Forbidden
+            response->setContentType("text/plain");
+            response->setBody("Path traversal attempt detected!");
+        } else {
+            if (!fs::exists(uri)) {
+                response->setStatus(404);  // Not Found
+                response->setContentType("text/plain");
+                response->setBody("404 Not Found");
+            } else {
+                // Read the file content
+                std::ifstream file(uri, std::ios::binary);
+                if (!file) {
+                    response->setStatus(500);  // Internal Server Error
+                    response->setContentType("text/plain");
+                    response->setBody("500 Internal Server Error - Cannot read file");
+                }
+
+                // Read the file into a string
+                std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+                // Set response body and status
+                response->setStatus(200);  // OK
+                response->setContentType("text/html");
+                response->setBody(content);
+            }
+        }
 
         if (!response->sendResponse()) {
             std::cerr << "Error sending response\n";
         }
 
+        client_fd = -1;  // Reset client_fd for the next iteration
         delete client;
         delete response;
     }

@@ -15,14 +15,14 @@
 HttpHandler::HttpHandler(const int _client_fd) : client_fd(_client_fd) {
 }
 
-HttpHandler::~HttpHandler() {
-    if (client_fd > 0) {
-        if (close(client_fd) < 0) {
-            std::runtime_error("Error closing socket");
-        }
-        std::cout << "Client " << client_fd << " socket closed gracefully.\n";
-    }
-}
+/*HttpHandler::~HttpHandler() {*/
+/*    if (client_fd > 0) {*/
+/*        if (close(client_fd) < 0) {*/
+/*            std::runtime_error("Error closing socket");*/
+/*        }*/
+/*        std::cout << "Client " << client_fd << " socket closed gracefully.\n";*/
+/*    }*/
+/*}*/
 
 const std::string& HttpHandler::getRequestData() {
     return full_request_str;
@@ -79,4 +79,8 @@ bool HttpHandler::sendData(const std::string& response) {
         return false;
     }
     return true;
+}
+
+const int HttpHandler::getClientFd() {
+    return client_fd;
 }

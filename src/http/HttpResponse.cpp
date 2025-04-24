@@ -1,7 +1,16 @@
 #include "HttpResponse.h"
 
+#include <unistd.h>
+
+#include <cstdio>
 #include <sstream>
 #include <string>
+
+HttpResponse::~HttpResponse() {
+    if (close(httpHandler->getClientFd()) < 0) {
+        perror("Failed to close client socket");
+    }
+}
 
 HttpResponse::HttpResponse(const int client_fd) : httpHandler(new HttpHandler(client_fd)) {
 }
