@@ -11,7 +11,7 @@ I built this web server from scratch as a learning experience to dive deeper int
 - ✅ Error handling with appropriate status codes
 - ✅ Clean socket management with proper cleanup
 - ⬜ Multi-threaded request processing
-- ⬜ Customizable logging system
+- ✅ Customizable logging system
 - ✅ Graceful shutdown handling
 
 ## 🏗️ Architecture
