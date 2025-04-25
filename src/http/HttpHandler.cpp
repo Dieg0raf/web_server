@@ -8,6 +8,8 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+
+#include "Logger.h"
 #define BUFFER_SIZE 4096
 #define MAX_MESSAGE_SIZE 1024 * 1024  // 1MB
 
@@ -24,6 +26,7 @@ bool HttpHandler::receiveRequest() {
         full_request_str = receiveData();
         return !full_request_str.empty();
     } catch (const std::exception& e) {
+        Logger::getLogger().error("Error receiving request: " + std::string(e.what()));
         return false;
     }
 }
@@ -37,23 +40,20 @@ std::string HttpHandler::receiveData() {
     while (true) {
         bytes_received = recv(client_fd, buffer.get(), BUFFER_SIZE, 0);
         if (bytes_received == 0) {
-            std::runtime_error("Connection closed");
+            throw std::runtime_error("Connection closed by client");
             break;
         }
         if (bytes_received == -1) {
-            std::runtime_error("Error receiving data");
+            throw std::runtime_error("Error receiving data: " + std::string(strerror(errno)));
             break;
         }
-
-        // TODO: Use logging instead of cout
-        /*std::cout << "Bytes received: " << bytes_received << std::endl;*/
 
         full_request_str.append(buffer.get(), bytes_received);
         total_bytes += bytes_received;
 
         // Check if message size exceeds the limit
         if (total_bytes > MAX_MESSAGE_SIZE) {
-            throw std::runtime_error("Message too large");
+            throw std::runtime_error("Message size exceeds limit");
         }
 
         if (full_request_str.find("\r\n\r\n") != std::string::npos) {
@@ -67,6 +67,7 @@ std::string HttpHandler::receiveData() {
 bool HttpHandler::sendData(const std::string& response) {
     ssize_t bytes_sent = write(client_fd, response.c_str(), response.size());
     if (bytes_sent < 0) {
+        Logger::getLogger().error("Error sending response: " + std::string(strerror(errno)));
         return false;
     }
     return true;

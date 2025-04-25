@@ -48,8 +48,13 @@ int ServerSocket::acceptClient() {
     return client_fd;
 }
 
+ServerSocket::~ServerSocket() {
+    closeSocket();
+}
+
 void ServerSocket::closeSocket() {
     if (server_fd > 0) {
         close(server_fd);
+        server_fd = -1;
     }
 }

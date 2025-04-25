@@ -2,13 +2,14 @@
 
 #include <unistd.h>
 
-#include <cstdio>
 #include <sstream>
 #include <string>
 
+#include "Logger.h"
+
 HttpResponse::~HttpResponse() {
     if (close(httpHandler->getClientFd()) < 0) {
-        perror("Failed to close client socket");
+        Logger::getLogger().error("Failed to close client socket");
     }
 }
 

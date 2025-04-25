@@ -15,10 +15,11 @@ SRC_DIR = src
 HTTP_DIR = src/http
 SOCKET_DIR = src/socket
 RESOURCE_DIR = src/resource
+LOG_DIR = src/logger
 INCLUDE_DIR = include
 
 # Source and object files
-SRC = $(wildcard $(HTTP_DIR)/*.cpp) $(wildcard $(SOCKET_DIR)/*cpp) $(wildcard $(RESOURCE_DIR)/*cpp) $(SRC_DIR)/server.cpp
+SRC = $(wildcard $(HTTP_DIR)/*.cpp) $(wildcard $(SOCKET_DIR)/*cpp) $(wildcard $(LOG_DIR)/*cpp) $(wildcard $(RESOURCE_DIR)/*cpp) $(SRC_DIR)/server.cpp
 OBJ = $(SRC:.cpp=.o)
 
 # Target executable
@@ -38,6 +39,8 @@ src/http/%.o: src/http/%.cpp
 src/socket/%.o: src/socket/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
+src/logger/%.o: src/logger/%.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
 
 src/resource/%.o: src/resource/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
