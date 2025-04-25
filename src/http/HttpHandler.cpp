@@ -5,7 +5,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include <iostream>  // TODO: remove after
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -14,15 +13,6 @@
 
 HttpHandler::HttpHandler(const int _client_fd) : client_fd(_client_fd) {
 }
-
-/*HttpHandler::~HttpHandler() {*/
-/*    if (client_fd > 0) {*/
-/*        if (close(client_fd) < 0) {*/
-/*            std::runtime_error("Error closing socket");*/
-/*        }*/
-/*        std::cout << "Client " << client_fd << " socket closed gracefully.\n";*/
-/*    }*/
-/*}*/
 
 const std::string& HttpHandler::getRequestData() {
     return full_request_str;
@@ -55,16 +45,17 @@ std::string HttpHandler::receiveData() {
             break;
         }
 
-        std::cout << "Bytes received: " << bytes_received << std::endl;
+        // TODO: Use logging instead of cout
+        /*std::cout << "Bytes received: " << bytes_received << std::endl;*/
+
         full_request_str.append(buffer.get(), bytes_received);
         total_bytes += bytes_received;
 
-        // Check if message size exceeds the limit (e.g., 1MB)
+        // Check if message size exceeds the limit
         if (total_bytes > MAX_MESSAGE_SIZE) {
             throw std::runtime_error("Message too large");
         }
 
-        // Optional: Check for HTTP end-of-request (e.g., \r\n\r\n)
         if (full_request_str.find("\r\n\r\n") != std::string::npos) {
             break;
         }

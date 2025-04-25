@@ -6,7 +6,6 @@
 class HttpHandler {
    public:
     explicit HttpHandler(const int _client_fd);
-    /*~HttpHandler();*/
 
     // Used for Request
     std::string receiveData();

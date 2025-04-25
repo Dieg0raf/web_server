@@ -14,11 +14,11 @@ endif
 SRC_DIR = src
 HTTP_DIR = src/http
 SOCKET_DIR = src/socket
-CON_DIR = src/connection
+RESOURCE_DIR = src/resource
 INCLUDE_DIR = include
 
 # Source and object files
-SRC = $(wildcard $(HTTP_DIR)/*.cpp) $(wildcard $(SOCKET_DIR)/*cpp) $(wildcard $(CON_DIR)/*cpp) $(SRC_DIR)/server.cpp
+SRC = $(wildcard $(HTTP_DIR)/*.cpp) $(wildcard $(SOCKET_DIR)/*cpp) $(wildcard $(RESOURCE_DIR)/*cpp) $(SRC_DIR)/server.cpp
 OBJ = $(SRC:.cpp=.o)
 
 # Target executable
@@ -36,6 +36,10 @@ src/http/%.o: src/http/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
 src/socket/%.o: src/socket/%.cpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+
+src/resource/%.o: src/resource/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
 src/%.o: src/%.cpp
