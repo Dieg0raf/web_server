@@ -10,6 +10,7 @@
 class HttpResponse {
    public:
     explicit HttpResponse(const int client_fd);
+    ~HttpResponse();
     void setHeader(const std::string &key, const std::string &value);
     void setContentType(const std::string &type);
     void setStatus(int newStatus);

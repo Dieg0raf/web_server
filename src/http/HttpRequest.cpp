@@ -1,6 +1,5 @@
 #include "HttpRequest.h"
 
-#include <iostream>
 #include <sstream>
 #include <string>
 
